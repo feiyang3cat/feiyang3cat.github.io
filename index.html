@@ -3,32 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Papers I Read</title>
+  <title>Paper Reading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>Papers I Read</h1>
-      <p class="subtitle">notes &amp; summaries</p>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+  </div>
+
+  <div class="container">
+    <header class="hero">
+      <h1 class="hero-title">Paper Reading</h1>
+      <p class="hero-sub">Papers I read, with notes &amp; summaries.</p>
     </header>
 
-    <table id="papers">
-      <thead>
-        <tr>
-          <th class="col-num">#</th>
-          <th class="col-date">Date</th>
-          <th class="col-topic">Topic</th>
-          <th class="col-paper">Paper</th>
-          <th class="col-notes">Notes</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-  </main>
+    <main class="papers">
 
-  <!-- Markdown renderer (no build step) -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
-  <script src="app.js"></script>
+      <!-- ════ To add a paper, copy one <article> block and edit it. ════ -->
+
+      <article class="paper">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://arxiv.org/abs/1802.05799" target="_blank" rel="noopener">Horovod</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">2026-05-31</span>
+            <span class="tag tag-topic">Parallelism / Distributed Training for AI</span>
+            <span class="tag level-simple">simple</span>
+          </div>
+        </div>
+        <div class="notes">
+          <p>
+            Data-parallel distributed training framework. Three questions:
+            <strong>how</strong> it distributes training, <strong>why</strong> that
+            works, and the <strong>arch + algorithm</strong>.
+          </p>
+          <p>
+            <strong>1. How — data parallelism.</strong> Data is split across servers;
+            each server holds a full copy of the model.
+          </p>
+          <p class="key-point">
+            <strong>💡 2. Why it works ⭐</strong> Each step starts from identical
+            weights. The <strong>forward pass</strong> computes a local loss and doesn't
+            change the weights; the <strong>backward pass</strong> produces <em>local</em>
+            gradients that differ per server. Those gradients are then
+            <strong>averaged across servers (all-reduce)</strong> 🔄, and every server
+            applies the <strong>same averaged gradient</strong> to the
+            <strong>same starting weights</strong> — so all replicas end the step
+            identical and stay in sync ✅.
+          </p>
+          <p>
+            <strong>3. Arch + algorithm.</strong> Older systems used parameter servers +
+            workers (now deprecated); Horovod instead uses ring-allreduce with tensor
+            fusion. Ring-allreduce takes <code>2(N-1)</code> steps — two passes around
+            the ring (a reduce-scatter then an all-gather) — and each step sends only
+            <code>1/N</code> of the data, so bandwidth usage stays low and independent of
+            the number of servers. Tensor fusion batches small tensors before sending,
+            improving bandwidth efficiency and average latency: it slightly delays the
+            first tensor (which waits to be batched) but cuts the queueing time of the
+            tensors that follow.
+          </p>
+        </div>
+      </article>
+
+    </main>
+
+    <footer class="site-footer">
+      <a href="https://github.com/feiyang3cat/feiyang3cat.github.io" target="_blank" rel="noopener">source on GitHub</a>
+    </footer>
+  </div>
 </body>
 </html>

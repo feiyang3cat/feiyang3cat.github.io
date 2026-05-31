@@ -1,49 +1,44 @@
-# feiyang3cat.github.io
+# feiyang3cat.github.io — Paper Reading
 
-A simple static site listing the papers I read, as a table with notes. No build
-step — plain HTML/CSS/JS that renders Markdown notes in the browser.
+A dead-simple static page listing papers I read, with notes & summaries.
+**Pure HTML + CSS — no JavaScript, no build step, no server.** Just open
+`index.html` (or push to GitHub Pages).
 
 **Live site:** https://feiyang3cat.github.io
 
-The table has five columns: **#**, **Date**, **Topic**, **Paper**, **Notes**.
-The Notes cell is rendered from a Markdown file, so you just write Markdown.
-
 ## Adding a paper
 
-1. Write your notes in a new Markdown file under `papers/`, e.g.
-   `papers/my-paper.md`.
-2. Add an entry to `papers/papers.json`:
+Open `index.html` and copy an existing `<article class="paper">` block inside
+`<main class="papers">`, then edit it. Newest papers go at the top.
 
-   ```json
-   {
-     "title": "My Paper Title",
-     "topic": "RL",
-     "file": "my-paper.md",
-     "date": "2026-06-01",
-     "link": "https://arxiv.org/abs/...."
-   }
-   ```
-
-   Only `title` and `file` are required. `date` sorts rows (newest first);
-   the `#` column is numbered automatically. `link` makes the paper name a link.
-3. Commit and push to `main`. GitHub Pages serves it automatically.
-
-## Local preview
-
-The page fetches Markdown via `fetch()`, so opening `index.html` as a `file://`
-won't work — run a local server:
-
-```sh
-python3 -m http.server 8000
-# then open http://localhost:8000
+```html
+<article class="paper">
+  <div class="paper-head">
+    <h2 class="paper-title">
+      <a href="https://arxiv.org/abs/..." target="_blank" rel="noopener">My Paper Title</a>
+    </h2>
+    <div class="paper-meta">
+      <span class="meta-date">2026-06-01</span>
+      <span class="tag tag-topic">Topic</span>
+      <span class="tag level-simple">simple</span>
+    </div>
+  </div>
+  <div class="notes">
+    <p>Write your notes as HTML — <strong>bold</strong>, <code>code</code>,
+       lists, etc.</p>
+    <ul>
+      <li>a bullet point</li>
+    </ul>
+  </div>
+</article>
 ```
+
+- Level pill: use `level-simple` (green), `level-medium` (amber), or `level-hard` (red).
+- Drop the `<a>` if a paper has no link; just put the title text in the `<h2>`.
 
 ## Files
 
-| File                 | Purpose                                    |
-| -------------------- | ------------------------------------------ |
-| `index.html`         | Page + table shell                         |
-| `style.css`          | Styling (light/dark via system preference) |
-| `app.js`             | Loads the manifest and renders the table   |
-| `papers/papers.json` | List of papers (the manifest)              |
-| `papers/*.md`        | One Markdown notes file per paper          |
+| File         | Purpose                                    |
+| ------------ | ------------------------------------------ |
+| `index.html` | The whole page — papers are HTML sections  |
+| `style.css`  | Styling (light/dark via system preference) |
