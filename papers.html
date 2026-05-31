@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Papers · feiyang3cat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-home" href="index.html">=^· ⩊ ·^=</a>
+      <div class="nav-links">
+        <a href="papers.html" class="active">Papers</a>
+        <a href="learning.html">Learning</a>
+        <a href="cheetah.html">Cheetahs</a>
+        <a href="bouldering.html">Bouldering</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1 class="hero-title">Tech Papers</h1>
+      <p class="hero-sub">~ papers i read, with notes &amp; summaries ~</p>
+    </header>
+
+    <main class="papers">
+
+      <!-- ════ To add a paper, copy one <article> block and edit it. ════ -->
+
+      <article class="paper">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://arxiv.org/abs/1802.05799" target="_blank" rel="noopener">Horovod</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">May 2026</span>
+            <span class="tag tag-topic">Parallelism / Distributed Training for AI</span>
+            <span class="tag level-simple">simple</span>
+          </div>
+        </div>
+        <div class="notes">
+          <p>
+            Data-parallel distributed training framework. Three questions:
+            <strong>how</strong> it distributes training, <strong>why</strong> that
+            works, and the <strong>arch + algorithm</strong>.
+          </p>
+          <p>
+            <strong>1. How — data parallelism.</strong> Data is split across servers;
+            each server holds a full copy of the model.
+          </p>
+          <p>
+            <strong>2. Why it works ⭐</strong> Each step starts from identical weights.
+            The <strong>forward pass</strong> computes a local loss and doesn't change
+            the weights; the <strong>backward pass</strong> produces <em>local</em>
+            gradients that differ per server. Those gradients are then
+            <strong>averaged across servers (all-reduce)</strong>, and every server
+            applies the <strong>same averaged gradient</strong> to the
+            <strong>same starting weights</strong> — so all replicas end the step
+            identical and stay in sync.
+          </p>
+          <p>
+            <strong>3. Arch + algorithm.</strong> Older systems used parameter servers +
+            workers (now deprecated); Horovod instead uses ring-allreduce with tensor
+            fusion. Ring-allreduce takes <code>2(N-1)</code> steps — two passes around
+            the ring (a reduce-scatter then an all-gather) — and each step sends only
+            <code>1/N</code> of the data, so bandwidth usage stays low and independent of
+            the number of servers. Tensor fusion batches small tensors before sending,
+            improving bandwidth efficiency and average latency: it slightly delays the
+            first tensor (which waits to be batched) but cuts the queueing time of the
+            tensors that follow.
+          </p>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://arxiv.org/abs/1912.01703" target="_blank" rel="noopener">PyTorch (NeurIPS 2019)</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">June 2026</span>
+            <span class="tag tag-topic">Coding Framework</span>
+            <span class="tag tag-todo">todo</span>
+          </div>
+        </div>
+        <div class="notes">
+          <!-- TODO: write full summary -->
+          <p>
+            PyTorch's imperative style makes it far easier to grasp how deep learning
+            frameworks work conceptually than TensorFlow's graph-based approach.
+          </p>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://www.usenix.org/conference/osdi22/presentation/yu" target="_blank" rel="noopener">Orca (OSDI 2022)</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">June 2026</span>
+            <span class="tag tag-topic">Inference Serving</span>
+            <span class="tag tag-todo">todo</span>
+          </div>
+        </div>
+        <div class="notes">
+          <!-- TODO: write full summary -->
+          <p>
+            The foundational paper for understanding LLM serving. PagedAttention,
+            DistServe, and Splitwise all build on the surfaces Orca introduces.
+          </p>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://arxiv.org/abs/1910.02054" target="_blank" rel="noopener">ZeRO (SC 2020)</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">June 2026</span>
+            <span class="tag tag-topic">Memory Optimization</span>
+            <span class="tag tag-todo">todo</span>
+          </div>
+        </div>
+        <div class="notes">
+          <!-- TODO: write full summary -->
+          <p>
+            Clearly explains why memory is the bottleneck and how to fix it
+            systematically. Later work (FlashAttention, ZeRO-Offload) builds on this
+            foundation.
+          </p>
+        </div>
+      </article>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-cats" aria-hidden="true">=^..^= &nbsp; =^..^= &nbsp; =^..^=</div>
+      <a href="https://github.com/feiyang3cat/feiyang3cat.github.io" target="_blank" rel="noopener">source on GitHub</a>
+      <p class="footer-link">
+        a selection of papers:
+        <a href="https://yangwang83.github.io/sys4ml.html" target="_blank" rel="noopener">yangwang83.github.io/sys4ml.html</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>
