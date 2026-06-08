@@ -397,6 +397,7 @@ body {
   white-space: nowrap;
 }
 .tag-topic { background: var(--paper); color: var(--ink); }
+.tag-key { background: #ffe14d; color: var(--ink); }
 .tag-donation { background: #3ec96b; color: #111; }
 .tag-todo {
   background: var(--paper);

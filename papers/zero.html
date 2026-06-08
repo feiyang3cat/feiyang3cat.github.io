@@ -38,13 +38,13 @@
       </header>
 
       <div class="post-body">
-            <h3>(0) Basic concepts in this paper</h3>
+            <h3>(0) Basic: foundational concepts and knowledge</h3>
         <ol>
-            <li>inter-GPU bandwidth: usually inside one single server, examples GPU<->GPU direct connection through NVLink/NVSwitch hundreds of GB/s. and over different nodes, GPUs communicate via innfiniBand which is common in HPC clusters and ethernet will be slower setups</li>
+            <li><strong>Inter-GPU bandwidth:</strong> communication speed depends on whether GPUs sit in the same server. <strong>Intra-node</strong> (within one server), GPUs talk directly over <strong>NVLink/NVSwitch</strong> at hundreds of GB/s — the fast path: <code>GPU &rarr; NVLink &rarr; GPU</code>. <strong>Inter-node</strong> (across servers), traffic crosses the network through each node's NIC: <code>GPU &rarr; NIC &rarr; network &rarr; NIC &rarr; GPU</code>, using either <strong>InfiniBand</strong> (common in HPC clusters, low latency / high bandwidth) or plain <strong>Ethernet</strong> (cheaper but slower). The takeaway: inter-node links are far slower than intra-node, so sharding strategies try to keep heavy communication inside a node.</li>
             <li>the memory: this paper refers to is GPU memory that GPU memory cannot host the full model and usually host memory is way larger than per-GPU memory</li>
         </ol>
 
-            <h3>(0) Generic: one MEMORY-OPTIMIZATION mental model</h3>
+            <h3>(1) Generic: one MEMORY-OPTIMIZATION mental model</h3>
         <ol>
           <li><strong>MEMORY FOOTPRINT identification:</strong> like in LLM training, the model state includes weights, gradients, optimizer states (for Adam optimizer they are 2-3 times of weights) and activation states. This analysis is domain/project specific.</li>
           <li><strong>Strategies to reduce MEMORY REDUNDANCY:</strong> like in ZeRO &rarr; full sharding of all states, and all-gather when computing one layer.</li>
@@ -52,7 +52,7 @@
         </ol>
 
 
-        <h3>(1) LLM domain: different types of Parallelism in pretraining: DP, TP, PP</h2>
+        <h3>(2) LLM Domain: different types of Parallelism in pretraining: DP, TP, PP</h2>
         <div class="table-wrap">
           <table>
             <thead>
@@ -96,7 +96,7 @@
           </table>
         </div>
 
-        <h3>(2) LLM Domain: ZeRO vs.TP</h3>
+        <h3>(3) LLM Domain: ZeRO vs.TP</h3>
         <p>
           Both ZeRO and TP use intra-layer sharding, but they split <em>different things</em>.
           TP partitions the <strong>work</strong> — each GPU only ever computes part of
@@ -195,6 +195,9 @@
           <figcaption>TP shards the computation (communicate mid-layer); ZeRO shards only storage (gather just-in-time, compute the whole layer).</figcaption>
         </figure>
       </div>
+        <h3>(TBD) (4) Key Details of ZeRO</h3>
+        <h3>(TBD) (5) The SOTA in Industry Practice</h3>
+
     </article>
 
     <footer class="site-footer">
