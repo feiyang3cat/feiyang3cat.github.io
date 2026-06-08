@@ -81,11 +81,32 @@ body {
 .hero-home { margin-top: 1rem; }
 
 .cat-logo {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
   font-family: "Baloo 2", cursive;
   font-size: 2.4rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   margin-bottom: 0.4rem;
+  padding: 0 0.6rem;
+}
+.cat-logo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 0.05em;
+  transform: translateX(-50%);
+  width: 210px;
+  height: 105px;
+  border-radius: 210px 210px 0 0;
+  background: radial-gradient(circle at 50% 100%,
+    transparent 0 58px,
+    #22c55e 58px 71px,
+    #a855f7 71px 84px,
+    #22c55e 84px 97px,
+    #a855f7 97px 105px);
 }
 
 .hero-title {
@@ -104,6 +125,20 @@ body {
   font-size: 1.05rem;
   font-weight: 700;
 }
+.hero-stat {
+  margin: 0.8rem 0 0;
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.stat-pill {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+.stat-pill-key { background: #ffe14d; }
 
 /* Empty state */
 .state { text-align: center; color: var(--soft); padding: 3rem 1rem; }
@@ -271,6 +306,13 @@ body {
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--ink);
 }
+.filter-btn.key { background: #ffe14d; color: var(--ink); }
+.filter-btn.key.active {
+  background: #ffe14d;
+  color: var(--ink);
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
 
 /* Paper cards */
 .papers { display: flex; flex-direction: column; gap: 1.8rem; }
@@ -375,6 +417,18 @@ body {
 .level-hard { background: var(--ink); color: var(--paper); }
 
 /* Notes */
+.paper-link {
+  display: inline-block;
+  margin-top: 1.1rem;
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 3px solid var(--ink);
+}
+.paper-link:hover { background: var(--ink); color: var(--paper); }
+
 .notes { font-size: 1rem; font-weight: 600; }
 .notes > :first-child { margin-top: 0; }
 .notes > :last-child { margin-bottom: 0; }
@@ -445,6 +499,150 @@ body {
   border-radius: 12px;
   color: var(--soft);
   font-style: italic;
+}
+
+/* ════ Long-form blog post layout (papers/*.html) ════ */
+.post { animation: pop 0.4s ease both; }
+
+.post-back {
+  display: inline-block;
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 2.2rem;
+}
+.post-back:hover { background: var(--ink); color: var(--paper); }
+
+.post-head { margin-bottom: 3rem; }
+.post-kicker {
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--soft);
+  margin: 0 0 0.4rem;
+}
+.post-title {
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0 0 0.9rem;
+  text-shadow: 3px 3px 0 var(--paper), 4px 4px 0 var(--ink);
+}
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+.post-dek {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--ink);
+  border-left: 5px solid var(--ink);
+  padding-left: 1.1rem;
+  margin: 0 0 1.1rem;
+}
+.post-source a {
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 2px solid var(--ink);
+}
+.post-source a:hover { background: var(--ink); color: var(--paper); }
+
+/* Comfortable reading body */
+.post-body { font-size: 1.07rem; line-height: 1.8; font-weight: 600; }
+.post-body > :first-child { margin-top: 0; }
+.post-body p { margin: 0 0 1.4rem; }
+.post-body h2 {
+  font-family: "Baloo 2", cursive;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 3rem 0 1rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 3px solid var(--ink);
+}
+.post-body h3 {
+  font-family: "Baloo 2", cursive;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 2.2rem 0 0.7rem;
+}
+.post-body ul,
+.post-body ol { margin: 0 0 1.4rem; padding-left: 1.5rem; }
+.post-body li { margin: 0.55rem 0; }
+.post-body li::marker { content: "–  "; color: var(--soft); }
+.post-body strong { font-weight: 800; }
+.post-body em { font-style: italic; }
+.post-body a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; }
+
+.post-body code {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.08em 0.4em;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+.post-body blockquote {
+  margin: 1.6rem 0;
+  padding: 0.8rem 1.2rem;
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  font-style: italic;
+  color: var(--soft);
+}
+
+.post-body figure { margin: 2.2rem 0; color: var(--ink); }
+.post-body figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.post-body figcaption {
+  color: var(--soft);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.8rem;
+}
+
+.post-body .table-wrap { overflow-x: auto; margin: 1.9rem 0; }
+.post-body table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 680px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.post-body th,
+.post-body td {
+  border: 2px solid var(--ink);
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+.post-body thead th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
 }
 
 /* Footer */
