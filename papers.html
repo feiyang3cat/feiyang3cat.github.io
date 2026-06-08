@@ -26,11 +26,61 @@
       <p class="hero-sub">~ papers i read, with notes &amp; summaries ~</p>
     </header>
 
+    <div class="filter-bar" role="group" aria-label="Filter papers by topic">
+      <span class="filter-label">filter by topic 🐾</span>
+      <button class="filter-btn active" data-filter="all">all</button>
+      <button class="filter-btn" data-filter="parallelism">Parallelism</button>
+      <button class="filter-btn" data-filter="memory">Memory Optimization</button>
+      <button class="filter-btn" data-filter="inference">Inference Serving</button>
+      <button class="filter-btn" data-filter="framework">Coding Framework</button>
+    </div>
+
     <main class="papers">
 
       <!-- ════ To add a paper, copy one <article> block and edit it. ════ -->
 
-      <article class="paper">
+      <article class="paper" data-topics="parallelism memory">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="papers/zero.html">ZeRO (SC 2020)</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">June 2026</span>
+            <span class="tag tag-topic">Parallelism</span>
+            <span class="tag tag-topic">Memory Optimization</span>
+          </div>
+        </div>
+        <div class="notes">
+          <p>
+            Clearly explains why memory is the bottleneck and how to fix it
+            systematically. Later work (FlashAttention, ZeRO-Offload) builds on this
+            foundation.
+          </p>
+          <p><a class="notes-cta" href="papers/zero.html">→ read the full notes for this paper</a></p>
+        </div>
+      </article>
+
+      <article class="paper" data-topics="inference">
+        <div class="paper-head">
+          <h2 class="paper-title">
+            <a href="https://www.usenix.org/conference/osdi22/presentation/yu" target="_blank" rel="noopener">Orca (OSDI 2022)</a>
+          </h2>
+          <div class="paper-meta">
+            <span class="meta-date">June 2026</span>
+            <span class="tag tag-topic">Inference Serving</span>
+            <span class="tag tag-todo">todo</span>
+          </div>
+        </div>
+        <div class="notes">
+          <!-- TODO: write full summary -->
+          <p>
+            The foundational paper for understanding LLM serving. PagedAttention,
+            DistServe, and Splitwise all build on the surfaces Orca introduces.
+          </p>
+        </div>
+      </article>
+
+      <article class="paper" data-topics="parallelism">
         <div class="paper-head">
           <h2 class="paper-title">
             <a href="https://arxiv.org/abs/1802.05799" target="_blank" rel="noopener">Horovod</a>
@@ -75,13 +125,13 @@
         </div>
       </article>
 
-      <article class="paper">
+      <article class="paper" data-topics="framework">
         <div class="paper-head">
           <h2 class="paper-title">
             <a href="https://arxiv.org/abs/1912.01703" target="_blank" rel="noopener">PyTorch (NeurIPS 2019)</a>
           </h2>
           <div class="paper-meta">
-            <span class="meta-date">June 2026</span>
+            <span class="meta-date">March 2026</span>
             <span class="tag tag-topic">Coding Framework</span>
             <span class="tag tag-todo">todo</span>
           </div>
@@ -91,47 +141,6 @@
           <p>
             PyTorch's imperative style makes it far easier to grasp how deep learning
             frameworks work conceptually than TensorFlow's graph-based approach.
-          </p>
-        </div>
-      </article>
-
-      <article class="paper">
-        <div class="paper-head">
-          <h2 class="paper-title">
-            <a href="https://www.usenix.org/conference/osdi22/presentation/yu" target="_blank" rel="noopener">Orca (OSDI 2022)</a>
-          </h2>
-          <div class="paper-meta">
-            <span class="meta-date">June 2026</span>
-            <span class="tag tag-topic">Inference Serving</span>
-            <span class="tag tag-todo">todo</span>
-          </div>
-        </div>
-        <div class="notes">
-          <!-- TODO: write full summary -->
-          <p>
-            The foundational paper for understanding LLM serving. PagedAttention,
-            DistServe, and Splitwise all build on the surfaces Orca introduces.
-          </p>
-        </div>
-      </article>
-
-      <article class="paper">
-        <div class="paper-head">
-          <h2 class="paper-title">
-            <a href="https://arxiv.org/abs/1910.02054" target="_blank" rel="noopener">ZeRO (SC 2020)</a>
-          </h2>
-          <div class="paper-meta">
-            <span class="meta-date">June 2026</span>
-            <span class="tag tag-topic">Memory Optimization</span>
-            <span class="tag tag-todo">todo</span>
-          </div>
-        </div>
-        <div class="notes">
-          <!-- TODO: write full summary -->
-          <p>
-            Clearly explains why memory is the bottleneck and how to fix it
-            systematically. Later work (FlashAttention, ZeRO-Offload) builds on this
-            foundation.
           </p>
         </div>
       </article>
@@ -147,5 +156,21 @@
       </p>
     </footer>
   </div>
+
+  <script>
+    const buttons = document.querySelectorAll(".filter-btn");
+    const papers = document.querySelectorAll(".papers .paper");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.classList.toggle("active", b === btn));
+        papers.forEach((paper) => {
+          const topics = (paper.dataset.topics || "").split(" ");
+          const show = filter === "all" || topics.includes(filter);
+          paper.style.display = show ? "" : "none";
+        });
+      });
+    });
+  </script>
 </body>
 </html>

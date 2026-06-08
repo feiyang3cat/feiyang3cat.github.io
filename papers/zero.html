@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZeRO · feiyang3cat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-home" href="../index.html">=^· ⩊ ·^=</a>
+      <div class="nav-links">
+        <a href="../papers.html">Papers</a>
+        <a href="../learning.html">Learning</a>
+        <a href="../cheetah.html">Cheetahs</a>
+        <a href="../bouldering.html">Bouldering</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1 class="hero-title">ZeRO</h1>
+      <p class="hero-sub">~ memory optimization for training huge models (SC 2020) ~</p>
+    </header>
+
+    <main class="papers">
+      <article class="paper">
+        <div class="notes notes-plain">
+          <p>
+            <strong>Part 1 — the brilliant finding:</strong> data doesn't need to be
+            replicated in memory for computation to be parallel. Instead of every GPU
+            holding the entire model, each GPU holds only a <code>1/N</code> shard of
+            each layer — layer 1 shard, layer 2 shard, layer 3 shard, … Then for each
+            layer, an <strong>all-gather</strong> reconstructs the full layer
+            just-in-time for computation. The memory buffer needed is the size of the
+            largest single layer, not the entire model. This is the key to breaking the
+            ultimate bottleneck on model size.
+          </p>
+          <p>
+            <strong>Part 2 — domain knowledge.</strong>
+          </p>
+          <p>
+            <strong>2a. Parallelism strategies.</strong>
+            <strong>DATA PARALLELISM (DP)</strong> requires every GPU to hold a full copy of
+            the model — fine when the model fits, but breaks down as models grow huge.
+            The fix is <strong>MODEL PARALLELISM (MP)</strong>, which comes in two flavors:
+          </p>
+          <ul>
+            <li>
+              <strong>TENSOR PARALLELISM (TP) — intra-layer splits.</strong> A single
+              layer is split across GPUs. Enables very large layers, but every forward
+              and backward pass requires all-reduce communication <em>within</em> the
+              layer, making communication overhead the main cost.
+            </li>
+            <li>
+              <strong>PIPELINE PARALLELISM (PP) — inter-layer splits.</strong> Layers
+              are partitioned across GPUs (GPU 1 runs layers 1–4, GPU 2 runs layers
+              5–8, …). Less communication, but the classic <strong>pipeline bubble
+              problem</strong>: GPUs early in the pipeline sit idle waiting for the
+              backward pass to arrive, wasting compute.
+            </li>
+          </ul>
+          <p>
+            <strong>LLM parallelism methods at a glance (DP / TP / PP / ZeRO).</strong>
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>What is split?</th>
+                  <th>What each GPU stores</th>
+                  <th>How computation works</th>
+                  <th>Communication pattern</th>
+                  <th>Main drawback</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Data Parallel (DP)</strong></td>
+                  <td>Batch (data)</td>
+                  <td>Full model + different mini-batch</td>
+                  <td>Each GPU runs full forward/backward independently</td>
+                  <td>Gradient all-reduce each step</td>
+                  <td>Model must fit on one GPU; full model duplicated everywhere</td>
+                </tr>
+                <tr>
+                  <td><strong>Tensor Parallel (TP)</strong></td>
+                  <td>Model tensors (matrix rows/columns, attention heads)</td>
+                  <td>Shards of weight matrices (e.g., W0, W1) + full activations</td>
+                  <td>Each GPU computes partial matmul outputs for each layer</td>
+                  <td>Frequent all-gather / all-reduce of intermediate activations per layer</td>
+                  <td>High communication overhead; tight synchronization inside every layer</td>
+                </tr>
+                <tr>
+                  <td><strong>Pipeline Parallel (PP)</strong></td>
+                  <td>Model depth (layers)</td>
+                  <td>Different contiguous layers per GPU</td>
+                  <td>Micro-batches flow stage-by-stage through GPUs</td>
+                  <td>Activation passing between pipeline stages</td>
+                  <td>Pipeline bubbles (GPU idle time), limited utilization, microbatch complexity</td>
+                </tr>
+                <tr>
+                  <td><strong>ZeRO / FSDP (ZeRO-3)</strong></td>
+                  <td>Training states (parameters, gradients, optimizer states)</td>
+                  <td>Sharded parameters (W0, W1, etc.)</td>
+                  <td>All-gather full weights per layer → full layer compute → discard/shard again</td>
+                  <td>All-gather parameters + reduce-scatter gradients per layer</td>
+                  <td>Communication overhead for parameter reconstruction; bandwidth-bound at scale</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            <strong>2b. Where the memory goes — model states vs. residual states.</strong>
+            ZeRO splits GPU memory into two buckets:
+          </p>
+          <ul>
+            <li>
+              <strong>MODEL STATES</strong> — the big, persistent consumers. Three pieces:
+              the <strong>parameters</strong>, the <strong>gradients</strong>, and the
+              <strong>optimizer states</strong>. For the Adam optimizer the optimizer
+              states are the per-parameter <strong>momentum</strong> (the running mean
+              of gradients) and <strong>variance</strong> (the running mean of squared
+              gradients). With mixed-precision training these dominate: Adam keeps fp32
+              copies of the parameters, momentum, and variance, so the optimizer states
+              alone can cost several times the size of the model itself.
+            </li>
+            <li>
+              <strong>RESIDUAL STATES</strong> — everything else: <strong>activations</strong>
+              saved for the backward pass, temporary <strong>buffers</strong>, and
+              <strong>fragmented</strong> (unusable) memory.
+            </li>
+          </ul>
+          <p>
+            <strong>2c. ZeRO vs. tensor parallelism — both split intra-layer, so what's
+            different?</strong> The split is of different things:
+          </p>
+          <ul>
+            <li>
+              <strong>TP splits the computation.</strong> Each GPU permanently owns a
+              slice of the layer and computes only <em>its</em> slice of the matrix
+              multiply. The full layer is never materialized on one GPU; instead the
+              partial results are combined with an all-reduce <em>during every forward
+              and backward pass</em>. Communication is intrinsic to the math, which is
+              why TP is bandwidth-hungry and usually kept within a single node.
+            </li>
+            <li>
+              <strong>ZeRO splits only the storage.</strong> Computation stays
+              data-parallel — each GPU still computes the <em>whole</em> layer. It just
+              doesn't keep the whole layer resident: it all-gathers the shards to
+              rebuild the full layer right before computing, runs the full layer, then
+              frees the gathered copy. The math each GPU does is identical to plain DP;
+              only the memory footprint is sharded.
+            </li>
+          </ul>
+          <p>
+            <strong>Example.</strong> Say one layer is a matrix multiply
+            <code>Y = X · W</code>, the weight <code>W</code> is split into a left half
+            <code>W_L</code> and a right half <code>W_R</code>, and we have 2 GPUs each
+            holding one half.
+          </p>
+          <ul>
+            <li>
+              <strong>Under TP:</strong> both GPUs see the <em>same</em> input
+              <code>X</code>. GPU0 computes <code>X · W_L</code>, GPU1 computes
+              <code>X · W_R</code> — each does <em>half</em> the multiply and produces a
+              <em>partial</em> result. They then <strong>all-reduce</strong> to combine
+              the halves into the full <code>Y</code>. Neither GPU ever holds all of
+              <code>W</code>, and the communication is part of computing this one layer.
+            </li>
+            <li>
+              <strong>Under ZeRO:</strong> the two GPUs see <em>different</em> data
+              batches (it's still data-parallel). Before computing, GPU0
+              <strong>all-gathers</strong> <code>W_R</code> from GPU1 to rebuild the full
+              <code>W</code>, then computes the <em>entire</em> <code>Y = X · W</code> on
+              its own batch; GPU1 does the same on its batch. Each GPU does the
+              <em>full</em> multiply, and once the layer is done it frees the gathered
+              <code>W_R</code> so memory drops back to one half.
+            </li>
+          </ul>
+          <figure>
+            <svg viewBox="0 0 620 360" role="img"
+                 aria-label="Side-by-side comparison of tensor parallelism and ZeRO on two GPUs"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 font-family="Nunito, sans-serif" font-weight="700">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                        markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 z" fill="currentColor" stroke="none" />
+                </marker>
+              </defs>
+
+              <!-- divider -->
+              <line x1="310" y1="20" x2="310" y2="345" stroke-dasharray="5 6" stroke-width="1.5" />
+
+              <!-- ─────────── TENSOR PARALLELISM (left) ─────────── -->
+              <text x="150" y="34" text-anchor="middle" font-size="17" stroke="none"
+                    fill="currentColor" font-weight="800">TENSOR PARALLELISM</text>
+              <text x="150" y="54" text-anchor="middle" font-size="12" stroke="none"
+                    fill="currentColor">splits the WORK</text>
+
+              <!-- shared input -->
+              <rect x="120" y="68" width="60" height="28" rx="7" />
+              <text x="150" y="86" text-anchor="middle" font-size="13" stroke="none"
+                    fill="currentColor">input X</text>
+              <text x="150" y="112" text-anchor="middle" font-size="11" stroke="none"
+                    fill="currentColor" font-style="italic">(same X to both)</text>
+
+              <!-- gpu boxes -->
+              <rect x="28" y="130" width="110" height="52" rx="9" />
+              <text x="83" y="151" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">GPU 0</text>
+              <text x="83" y="170" text-anchor="middle" font-size="13" stroke="none" fill="currentColor">X · W_L</text>
+              <rect x="162" y="130" width="110" height="52" rx="9" />
+              <text x="217" y="151" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">GPU 1</text>
+              <text x="217" y="170" text-anchor="middle" font-size="13" stroke="none" fill="currentColor">X · W_R</text>
+
+              <!-- arrows X -> gpus -->
+              <path d="M138,96 L90,128" marker-end="url(#arrow)" />
+              <path d="M162,96 L210,128" marker-end="url(#arrow)" />
+
+              <!-- all-reduce -->
+              <rect x="70" y="240" width="160" height="34" rx="9" />
+              <text x="150" y="262" text-anchor="middle" font-size="12.5" stroke="none"
+                    fill="currentColor">all-reduce → full Y</text>
+              <path d="M83,182 L140,238" marker-end="url(#arrow)" />
+              <path d="M217,182 L160,238" marker-end="url(#arrow)" />
+              <text x="150" y="306" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor" font-style="italic">each GPU did HALF the multiply;</text>
+              <text x="150" y="322" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor" font-style="italic">talk mid-layer to combine</text>
+
+              <!-- ─────────── ZeRO (right) ─────────── -->
+              <text x="465" y="34" text-anchor="middle" font-size="17" stroke="none"
+                    fill="currentColor" font-weight="800">ZeRO</text>
+              <text x="465" y="54" text-anchor="middle" font-size="12" stroke="none"
+                    fill="currentColor">splits the MEMORY</text>
+
+              <!-- gpu boxes holding shards + own batch -->
+              <rect x="338" y="72" width="116" height="56" rx="9" />
+              <text x="396" y="92" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">GPU 0 · batch X₀</text>
+              <text x="396" y="113" text-anchor="middle" font-size="13" stroke="none" fill="currentColor">holds W_L</text>
+              <rect x="476" y="72" width="116" height="56" rx="9" />
+              <text x="534" y="92" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">GPU 1 · batch X₁</text>
+              <text x="534" y="113" text-anchor="middle" font-size="13" stroke="none" fill="currentColor">holds W_R</text>
+
+              <!-- all-gather double arrow -->
+              <path d="M458,100 L472,100" marker-end="url(#arrow)" marker-start="url(#arrow)" />
+              <text x="465" y="150" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor">all-gather W</text>
+
+              <!-- full compute boxes -->
+              <rect x="338" y="168" width="116" height="50" rx="9" />
+              <text x="396" y="189" text-anchor="middle" font-size="11.5" stroke="none" fill="currentColor">compute FULL</text>
+              <text x="396" y="207" text-anchor="middle" font-size="12.5" stroke="none" fill="currentColor">Y = X₀ · W</text>
+              <rect x="476" y="168" width="116" height="50" rx="9" />
+              <text x="534" y="189" text-anchor="middle" font-size="11.5" stroke="none" fill="currentColor">compute FULL</text>
+              <text x="534" y="207" text-anchor="middle" font-size="12.5" stroke="none" fill="currentColor">Y = X₁ · W</text>
+
+              <path d="M396,128 L396,166" marker-end="url(#arrow)" />
+              <path d="M534,128 L534,166" marker-end="url(#arrow)" />
+
+              <text x="465" y="252" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor" font-style="italic">each GPU does the FULL multiply</text>
+              <text x="465" y="268" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor" font-style="italic">on its own batch, then frees W_R;</text>
+              <text x="465" y="284" text-anchor="middle" font-size="11.5" stroke="none"
+                    fill="currentColor" font-style="italic">talk only to gather params</text>
+            </svg>
+            <figcaption>TP shards the computation (communicate mid-layer); ZeRO shards only storage (gather just-in-time, compute the whole layer).</figcaption>
+          </figure>
+          <p>
+            In short: <strong>TP partitions the work</strong> (each GPU does a fraction
+            of the layer's math, communicating mid-computation), while
+            <strong>ZeRO partitions the memory</strong> (each GPU does the full math
+            redundantly, communicating only to gather/scatter parameters around it).
+          </p>
+          <p>
+            <strong>Why ZeRO wins.</strong>
+          </p>
+          <ul>
+            <li>
+              <strong>Cheaper, off-the-critical-path communication.</strong> TP's
+              all-reduce sits <em>inside</em> every layer's forward and backward pass —
+              compute must wait on it, so it can't easily be hidden. ZeRO keeps the
+              data-parallel pattern (all-gather params, reduce-scatter gradients), and
+              those gathers can be <strong>prefetched and overlapped</strong> with
+              compute of the previous layer. Total communication volume stays close to
+              plain DP rather than scaling with every matrix multiply.
+            </li>
+            <li>
+              <strong>Scales beyond a single node.</strong> Because TP communicates so
+              heavily per layer, it's effectively pinned to one box with high-bandwidth
+              NVLink. ZeRO's lighter traffic lets it shard across many nodes, so memory
+              savings grow <strong>linearly with the number of GPUs</strong> — the path
+              to truly huge models.
+            </li>
+            <li>
+              <strong>Drop-in, no model rewrite.</strong> TP requires surgically
+              splitting each layer's math and inserting collectives by hand. ZeRO leaves
+              the model code untouched — it's a transparent replacement for ordinary
+              data-parallel training.
+            </li>
+          </ul>
+        </div>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-cats" aria-hidden="true">=^..^= &nbsp; =^..^= &nbsp; =^..^=</div>
+      <a href="https://github.com/feiyang3cat/feiyang3cat.github.io" target="_blank" rel="noopener">source on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

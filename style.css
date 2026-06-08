@@ -227,8 +227,50 @@ body {
 .grade-vb { background: #c9ccd1; color: #111; }
 .grade-v0 { background: #ffd23f; color: #111; }
 .grade-v1 { background: #ff8fc7; color: #111; }
+.grade-v2 { background: #a78bfa; color: #111; }
 
 .routine-card { margin-bottom: 2.8rem; }
+
+/* Topic filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 2.4rem;
+}
+.filter-label {
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--soft);
+  margin-right: 0.15rem;
+}
+.filter-btn {
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, color 0.1s ease;
+}
+.filter-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.filter-btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+.filter-btn.active {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
 
 /* Paper cards */
 .papers { display: flex; flex-direction: column; gap: 1.8rem; }
@@ -340,9 +382,52 @@ body {
 .notes ul, .notes ol { margin: 0.7rem 0; padding-left: 1.4rem; }
 .notes li { margin: 0.3rem 0; }
 .notes li::marker { content: "🐾 "; }
+
+/* Plain notes — drop the cat paw bullets for a cleaner, more technical read */
+.notes-plain li::marker { content: "–  "; }
+
+/* Comparison tables */
+.notes .table-wrap { overflow-x: auto; margin: 1.3rem 0; }
+.notes table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 680px;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.notes th,
+.notes td {
+  border: 2px solid var(--ink);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+.notes thead th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Baloo 2", cursive;
+  font-weight: 700;
+}
 .notes strong { font-weight: 800; }
 .notes em { font-style: italic; }
 .notes a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; }
+
+.notes figure { margin: 1.4rem 0; color: var(--ink); }
+.notes figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.notes figcaption {
+  color: var(--soft);
+  font-size: 0.85rem;
+  text-align: center;
+  margin-top: 0.6rem;
+}
 
 .notes code {
   background: var(--ink);
