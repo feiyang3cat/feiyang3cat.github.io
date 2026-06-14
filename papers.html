@@ -54,6 +54,19 @@
           </div>
         </div>
         <div class="notes">
+          <p>TL;DR in Chinese</p>
+          <p>
+          (1) 首先这篇需要提前理解模型是如何分布式训练的：用 Data Parallelism 分布式训练（horovod 那一篇学过了），和两种 Model Parallelism 的分布式训练思路（横切 -> pipeline pattern or layer parallelism，或者竖切 -> tensor parallelism）需要了解下。之所以有了 DP 和 MP 两种方式的 parallelism，主要还是因为原来光是数据大，现在模型也大，很难用一个 GPU 或者 node 来 support 一个 model。
+          </p>
+          <p>
+          (2-a) 优化 memory 的 method/方法论：Horovod 主要讲网络 overhead 优化，这里主要讲内存怎么优化，整个思考方式还是挺 clean and neat 的。memory footprint 分析分别有什么类型的 state 占比，或者数量级有多大（在 training 整个角度分了 optimizer state、gradient 和 parameters 作为三种核心的 model state，剩下的一些 memory footprint 简单叫做 residual state）。第二步细分每一种 state 是不是有冗余，like cluster 角度多次存储，像 model state 全部模型都 hold 相当于存了 N 份，当然如果是实时系统这个 makes sense for perf，但是离线训练系统这个就可以继续优化，全部 shard 成 1/N 然后通过 all reduce 或者其他方式再聚合。最后需要评估改进，like 内存和网络的全面影响。
+          </p>
+          <p>
+          (2-b) 感觉还需要一点的方法论基础就是 parallel computing，like all-reduce/reduce-scatter/all-gather…… 目前我只有上学的时候这门课的基础知识，似乎作为基础就够了。
+          </p>
+          <p>
+          (3) 具体的领域知识很重要：(a) 由于 optimizer states 是一个巨大的、和 weights 一一对应的，且发生在 forward/backward propagate 之后，就可以 reduce-scatter 1/N。(b) layer 的 backward propagation 并不需要后一层 layer 的 gradients，只需要 input gradients 和 activation gradients，所以每一层计算完可以马上发生 reduce-scatter 来释放内存（注意 zero-dp 里是假设在 dp 的基础上进行的）。但是注意 layer parameter gradients optimizer 计算是需要的，所以 reduce-scatter 的时候要 scatter aligned with optimizer ownership。-> 上课学过的 dependency analysis。(c) parameter partitioning is based on the fact that forward propagation happens layer by layer, the whole model is never used at one time fully。不过这样每层 forward propagation 时候需要 all-gather。这种做法和 tensor parallelism 的区别就是 for batches of data 计算 forward propagation 的时候，每一层还是在独立计算的，需要 all-gather 计算的这一层，因为这里每个 GPU 的数据不一样。
+          </p>
           <p><a href="papers/zero.html">this paper has a full page for notes</a></p>
         </div>
         <a class="paper-link" href="papers/zero.html">→ go to the paper</a>
@@ -88,6 +101,14 @@
           </div>
         </div>
         <div class="notes">
+          <p>
+          TL;DR in Chinese
+          说到底就是先介绍了一种分布式训练的方式就是Data Parallelism是怎么work的每个节点都有相同的模型，数据分片。
+          之所以这么说是因为向前传递和向后传递不改参数所有节点参数一致，
+          optimizer最后需要根据graident全局计算weights变更的时候再进行all reduce/gather。
+          Horovod提出不用参数服务器而是workers ring-based reduce and propagation减少通信冗余from NM+N? to 2(N-1).
+          N are data, M are nodes.
+          </p>
           <p>
             Data-parallel distributed training framework. Three questions:
             <strong>how</strong> it distributes training, <strong>why</strong> that
