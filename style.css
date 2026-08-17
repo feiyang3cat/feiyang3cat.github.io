@@ -263,6 +263,7 @@ body {
 .grade-v0 { background: #ffd23f; color: #111; }
 .grade-v1 { background: #ff8fc7; color: #111; }
 .grade-v2 { background: #a78bfa; color: #111; }
+.grade-v3 { background: #7cc4ff; color: #111; }
 .tag-recovery { background: #3ec96b; color: #111; }
 
 .routine-card { margin-bottom: 2.8rem; }
@@ -314,6 +315,28 @@ body {
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--ink);
 }
+
+/* Annual goal cards */
+.goals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 2.4rem;
+}
+.goal {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  padding: 1.3rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+.goal h2 {
+  font-family: "Baloo 2", cursive;
+  font-size: 1.15rem;
+  margin: 0;
+}
+.goal p { margin: 0.7rem 0 0; color: var(--soft); font-size: 0.9rem; font-weight: 700; }
+.goal-stat { font-family: "Baloo 2", cursive; color: var(--ink); }
 
 /* Paper cards */
 .papers { display: flex; flex-direction: column; gap: 1.8rem; }
@@ -400,6 +423,7 @@ body {
 .tag-topic { background: var(--paper); color: var(--ink); }
 .tag-key { background: #ffe14d; color: var(--ink); }
 .tag-donation { background: #3ec96b; color: #111; }
+.tag-reading { background: #ffb347; color: #111; }
 .tag-todo {
   background: var(--paper);
   color: var(--soft);
@@ -671,5 +695,6 @@ body {
   .container { padding: 2.5rem 1.1rem 3.5rem; }
   .paper { padding: 1.4rem 1.3rem; }
   .hub { grid-template-columns: 1fr; }
+  .goals { grid-template-columns: 1fr; }
   .holds-grid { grid-template-columns: repeat(2, 1fr); }
 }
