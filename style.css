@@ -9,10 +9,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #f2f2f2;
-    --paper: #131313;
-    --soft: #9a9a9a;
-    --dot: rgba(255, 255, 255, 0.10);
+    --ink: #111111;
+    --paper: #ffffff;
+    --soft: #6b6b6b;
+    --dot: rgba(0, 0, 0, 0.10);
     --shadow: 6px 6px 0 var(--ink);
     --shadow-hover: 9px 9px 0 var(--ink);
   }
@@ -103,10 +103,10 @@ body {
   border-radius: 210px 210px 0 0;
   background: radial-gradient(circle at 50% 100%,
     transparent 0 58px,
-    #22c55e 58px 71px,
-    #a855f7 71px 84px,
-    #22c55e 84px 97px,
-    #a855f7 97px 105px);
+    #111111 58px 71px,
+    #d8d8d8 71px 84px,
+    #111111 84px 97px,
+    #d8d8d8 97px 105px);
 }
 
 .hero-title {
@@ -120,17 +120,61 @@ body {
 }
 
 .hero-sub {
-  margin: 0;
-  color: var(--soft);
-  font-size: 1.05rem;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: "Lilita One", sans-serif;
+  font-size: clamp(1.75rem, 4.5vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+}
+.hero-note {
+  max-width: 42rem;
+  margin: 0.65rem auto 0;
+  color: var(--ink);
+  font-size: 0.9rem;
   font-weight: 700;
+  line-height: 1.45;
+}
+.hero-resources {
+  max-width: 42rem;
+  margin: 1.2rem auto 1rem;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  text-align: left;
+}
+.hero-resources p {
+  margin: 0;
+  padding: 0.75rem 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.hero-resources p + p { border-top: 1px solid var(--ink); }
+.hero-resources strong { display: block; }
+.hero-resources a {
+  color: #8b6508;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  text-decoration-thickness: 2px;
 }
 .hero-creed {
-  max-width: 34ch;
+  max-width: 64ch;
   margin: 1.1rem auto 0;
   font-weight: 700;
   font-style: italic;
   line-height: 1.5;
+}
+.hero-creed-main {
+  display: block;
+  font-size: 1.3rem;
+}
+.hero-creed-line { display: block; }
+.hero-creed-note {
+  display: block;
+  margin-top: 0.75rem;
+  color: #8b6508;
 }
 .hero-stat {
   margin: 0.8rem 0 0;
@@ -145,7 +189,7 @@ body {
   border: 2px solid var(--ink);
   background: var(--paper);
 }
-.stat-pill-key { background: #ffe14d; }
+.stat-pill-key { background: #111111; color: #ffffff; }
 
 /* Empty state */
 .state { text-align: center; color: var(--soft); padding: 3rem 1rem; }
@@ -249,11 +293,11 @@ body {
   border: 3px solid var(--ink);
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.28);
 }
-.hold--jug    { width: 88px; height: 62px; background: #ff5c5c; border-radius: 46% 46% 42% 42% / 62% 62% 38% 38%; }
-.hold--sloper { width: 96px; height: 52px; background: #4d8cff; border-radius: 50% 50% 14px 14px; }
-.hold--crimp  { width: 86px; height: 22px; background: #ffd23f; border-radius: 7px; }
-.hold--pinch  { width: 42px; height: 78px; background: #3ec96b; border-radius: 22px; }
-.hold--pocket { width: 76px; height: 76px; background: #a45cff; border-radius: 50%; }
+.hold--jug    { width: 88px; height: 62px; background: #222222; border-radius: 46% 46% 42% 42% / 62% 62% 38% 38%; }
+.hold--sloper { width: 96px; height: 52px; background: #555555; border-radius: 50% 50% 14px 14px; }
+.hold--crimp  { width: 86px; height: 22px; background: #888888; border-radius: 7px; }
+.hold--pinch  { width: 42px; height: 78px; background: #aaaaaa; border-radius: 22px; }
+.hold--pocket { width: 76px; height: 76px; background: #333333; border-radius: 50%; }
 .hold--pocket::before,
 .hold--pocket::after {
   content: "";
@@ -266,17 +310,17 @@ body {
 }
 .hold--pocket::before { left: 16px; }
 .hold--pocket::after  { right: 16px; }
-.hold--edge   { width: 98px; height: 32px; background: #ff913f; border-radius: 10px 10px 5px 5px; }
+.hold--edge   { width: 98px; height: 32px; background: #cccccc; border-radius: 10px 10px 5px 5px; }
 .hold-name { font-family: "Baloo 2", cursive; font-weight: 700; font-size: 1.05rem; }
 .hold-desc { color: var(--soft); font-size: 0.85rem; margin: 0.25rem 0 0; }
 
 /* Bouldering grade tags — colorful, keep the black cartoon outline */
-.grade-vb { background: #c9ccd1; color: #111; }
-.grade-v0 { background: #ffd23f; color: #111; }
-.grade-v1 { background: #ff8fc7; color: #111; }
-.grade-v2 { background: #a78bfa; color: #111; }
-.grade-v3 { background: #7cc4ff; color: #111; }
-.tag-recovery { background: #3ec96b; color: #111; }
+.grade-vb { background: #f5f1ff; color: #111111; }
+.grade-v0 { background: #e4dbff; color: #111111; }
+.grade-v1 { background: #c5afff; color: #111111; }
+.grade-v2 { background: #8968d8; color: #ffffff; }
+.grade-v3 { background: #c9f2d2; color: #111111; }
+.tag-recovery { background: #ffffff; color: #111111; }
 
 .routine-card { margin-bottom: 2.8rem; }
 
@@ -320,10 +364,10 @@ body {
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--ink);
 }
-.filter-btn.key { background: #ffe14d; color: var(--ink); }
+.filter-btn.key { background: var(--paper); color: var(--ink); }
 .filter-btn.key.active {
-  background: #ffe14d;
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
   transform: translate(3px, 3px);
   box-shadow: 0 0 0 var(--ink);
 }
@@ -338,7 +382,7 @@ body {
 }
 .banner img { display: block; width: 100%; height: auto; }
 
-/* Ultimate goal */
+/* Goals */
 .creed {
   background: var(--paper);
   border: 3px solid var(--ink);
@@ -381,6 +425,55 @@ body {
   font-size: 0.85rem;
   font-weight: 700;
   line-height: 1.45;
+}
+
+.goal-status {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: goal-status;
+}
+.current-phase {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--ink);
+}
+.current-phase > p { margin-top: 0; }
+.current-phase .phase-title {
+  font-family: "Lilita One", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.goal-status li { counter-increment: goal-status; margin: 0.45rem 0; }
+.goal-status li::before {
+  content: "(" counter(goal-status, lower-alpha) ") ";
+  font-weight: 800;
+}
+.current-questions {
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 2px dashed var(--ink);
+}
+.current-questions > p { margin-top: 0; }
+.current-questions > .questions-title {
+  font-family: "Lilita One", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.25;
+}
+.current-questions ol {
+  margin: 0.7rem 0 0;
+  padding-left: 1.4rem;
+}
+.current-questions li { margin: 0.45rem 0; }
+.question-groups > li { margin: 0.85rem 0; }
+.question-groups > li::marker { font-weight: 800; }
+
+.cheetah-page .section-title,
+.cheetah-page .tl-title {
+  font-family: "Lilita One", sans-serif;
+  font-weight: 400;
 }
 
 /* Implementation steps */
@@ -678,11 +771,12 @@ body {
   white-space: nowrap;
 }
 .tag-topic { background: var(--paper); color: var(--ink); }
-.tag-key { background: #ffe14d; color: var(--ink); }
-.tag-donation { background: #3ec96b; color: #111; }
-.tag-reading { background: #ffb347; color: #111; }
-.tag-done { background: #3ec96b; color: #111; }
-.tag-now { background: #ffe14d; color: #111; }
+.tag-key { background: var(--ink); color: var(--paper); }
+.tag-donation { background: #c89b3c; color: #111111; }
+.tag-reading { background: #d9f0dc; color: #111111; }
+.tag-zoo { background: #1f5138; color: #ffffff; }
+.tag-done { background: #111111; color: #ffffff; }
+.tag-now { background: #777777; color: #ffffff; }
 .tag-next { background: var(--paper); color: var(--ink); }
 .tag-todo {
   background: var(--paper);
@@ -722,6 +816,13 @@ body {
 .notes ul, .notes ol { margin: 0.7rem 0; padding-left: 1.4rem; }
 .notes li { margin: 0.3rem 0; }
 .notes li::marker { content: "🐾 "; }
+.timeline .notes li::marker { content: "•  "; }
+.timeline .notes .place-highlight {
+  padding: 0.05rem 0.25rem;
+  background: #f59e0b;
+  color: #111111;
+  font-weight: 800;
+}
 
 /* Plain notes — drop the cat paw bullets for a cleaner, more technical read */
 .notes-plain li::marker { content: "–  "; }
