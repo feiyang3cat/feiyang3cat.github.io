@@ -9,9 +9,8 @@ build step, no server.** Just open `index.html` (or push to GitHub Pages).
 
 | Page             | What it is                                   |
 | ---------------- | -------------------------------------------- |
-| `index.html`     | Home hub — links to the four sections        |
+| `index.html`     | Home hub — links to the three sections       |
 | `papers.html`    | Tech Papers — papers I read, with notes      |
-| `learning.html`  | Tech Learning — other tech I'm picking up    |
 | `cheetah.html`   | Cheetah Protection                           |
 | `bouldering.html`| Bouldering                                   |
 | `style.css`      | Shared cartoon-cat theme (light/dark)        |

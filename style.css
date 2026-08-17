@@ -318,8 +318,8 @@ body {
 
 /* Annual goal cards */
 .goals {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 1.2rem;
   margin-bottom: 2.4rem;
 }
@@ -695,6 +695,5 @@ body {
   .container { padding: 2.5rem 1.1rem 3.5rem; }
   .paper { padding: 1.4rem 1.3rem; }
   .hub { grid-template-columns: 1fr; }
-  .goals { grid-template-columns: 1fr; }
   .holds-grid { grid-template-columns: repeat(2, 1fr); }
 }
