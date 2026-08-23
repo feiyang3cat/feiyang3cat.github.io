@@ -169,23 +169,6 @@ body {
   overflow-wrap: anywhere;
   text-decoration-thickness: 2px;
 }
-.hero-creed {
-  max-width: 64ch;
-  margin: 1.1rem auto 0;
-  font-weight: 700;
-  font-style: italic;
-  line-height: 1.5;
-}
-.hero-creed-main {
-  display: block;
-  font-size: 1.3rem;
-}
-.hero-creed-line { display: block; }
-.hero-creed-note {
-  display: block;
-  margin-top: 0.75rem;
-  color: #8b6508;
-}
 .hero-stat {
   margin: 0.8rem 0 0;
   font-family: "Baloo 2", cursive;
