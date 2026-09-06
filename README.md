@@ -33,6 +33,26 @@ The photography section keeps publishable images separate from camera originals:
 Keep another backup of `photos/originals/`: because Git ignores it, cloning the
 website repository on a new computer will not restore those files.
 
+### Converting an iPhone album
+
+On macOS, place the untouched HEIC files in `photos/originals/<album-name>/`,
+then run:
+
+```sh
+./scripts/process-photo-album.sh <album-name>
+```
+
+For example:
+
+```sh
+./scripts/process-photo-album.sh 09-26-gymn
+```
+
+The script uses macOS Quick Look and `sips` without visually inspecting the
+photos. It creates browser-compatible JPG files in `photos/web/<album-name>/`
+and byte-for-byte original HEIC downloads in `photos/downloads/<album-name>/`.
+Files in `photos/downloads/` are public and may retain camera metadata.
+
 ## Adding an entry to a section
 
 Open the section's page (e.g. `papers.html`), copy an existing
