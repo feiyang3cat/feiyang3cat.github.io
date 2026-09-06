@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Knewave&display=swap");
+
 :root {
   --ink: #111111;
   --paper: #ffffff;
@@ -685,6 +687,13 @@ body {
 .photo-frame:nth-child(3n + 2) { grid-column: span 5; }
 .photo-roll-featured .photo-frame:first-child { grid-column: 1 / -1; }
 .photo-roll-featured .photo-frame:not(:first-child) { grid-column: span 4; }
+.photo-roll-uniform .photo-frame { grid-column: span 4; }
+.photo-roll-uniform .photo-frame img {
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+}
+.photo-roll-uniform .photo-frame-finale { grid-column: 1 / -1; }
+.photo-roll-uniform .photo-frame-finale img { aspect-ratio: auto; }
 .photo-frame:hover {
   transform: translate(-3px, -3px);
   box-shadow: var(--shadow-hover);
@@ -1228,6 +1237,7 @@ body {
   .photo-frame:nth-child(3n + 2) { grid-column: 1 / -1; }
   .photo-roll-featured .photo-frame:first-child,
   .photo-roll-featured .photo-frame:not(:first-child) { grid-column: 1 / -1; }
+  .photo-roll-uniform .photo-frame { grid-column: 1 / -1; }
   .photo-empty { grid-column: 1 / -1; min-height: 240px; }
   .holds-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -1237,9 +1247,9 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 :root {
   --ink: #292824;
-  --paper: #f7f5f0;
-  --soft: #77736b;
-  --line: #d8d3c9;
+  --paper: #faf9f6;
+  --soft: #727270;
+  --line: #dedbd4;
   --accent: #8b493c;
   --dot: transparent;
   --shadow: none;
@@ -1312,6 +1322,14 @@ body {
   font-size: clamp(5rem, 16vw, 9rem);
   letter-spacing: -0.06em;
 }
+.home-mark { margin: 0; }
+.home-mark img {
+  display: block;
+  width: min(100%, 430px);
+  height: auto;
+  margin: 0 auto;
+  mix-blend-mode: multiply;
+}
 .hero-sub {
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(2rem, 5vw, 3.25rem);
@@ -1350,7 +1368,7 @@ body {
 .hub-card:hover {
   transform: none;
   box-shadow: none;
-  background: #efebe3;
+  background: #f1efe9;
 }
 .hub-card-wip { border-style: solid; }
 .hub-icon {
@@ -1559,4 +1577,28 @@ body {
   }
   .paper { padding: 1.5rem 1.25rem; }
   .album-index { gap: 3rem; }
+}
+
+/* Brush lettering for display titles; body copy stays highly readable. */
+h1,
+h2,
+h3 {
+  font-family: "Knewave", "Brush Script MT", cursive !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Set the small FX site mark in the same brush typeface as the headings. */
+.nav-home {
+  width: auto;
+  height: auto;
+  overflow: visible;
+  background: none;
+  font-family: "Knewave", "Brush Script MT", cursive;
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  mix-blend-mode: normal;
+  text-indent: 0;
 }
