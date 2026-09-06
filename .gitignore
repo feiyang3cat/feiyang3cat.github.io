@@ -1,0 +1,7 @@
+# Camera originals stay local and must not be published by GitHub Pages.
+photos/originals/*
+!photos/originals/.gitkeep
+
+# Web galleries use generated JPG/WebP files, not copied iPhone originals.
+photos/web/**/*.HEIC
+photos/web/**/*.heic

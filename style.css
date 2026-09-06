@@ -215,6 +215,7 @@ body {
 .hub-card:nth-child(2) { animation-delay: 80ms; }
 .hub-card:nth-child(3) { animation-delay: 160ms; }
 .hub-card:nth-child(4) { animation-delay: 240ms; }
+.hub-card:nth-child(5) { animation-delay: 320ms; }
 .hub-icon {
   font-family: "Baloo 2", cursive;
   font-size: 1.9rem;
@@ -563,6 +564,172 @@ body {
   margin: 1.1rem 0 0;
 }
 .gallery-note + .section-title { margin-top: 3.2rem; }
+
+/* Photography portfolio */
+.photo-page .container { max-width: 1040px; }
+.photo-intro {
+  max-width: 38rem;
+  margin: 0 auto;
+  color: var(--soft);
+  text-align: center;
+}
+.album-index {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem 1.5rem;
+  margin-top: 3rem;
+}
+.album-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: none;
+  animation: pop 0.4s ease both;
+}
+.album-cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: 5px 5px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.album-card:hover .album-cover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--ink);
+}
+.album-cover-placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(145deg, transparent 48%, var(--ink) 48% 51%, transparent 51%),
+    radial-gradient(circle at 67% 37%, var(--ink) 0 7%, transparent 7.5%),
+    var(--paper);
+}
+.album-cover-placeholder span {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  font-family: "Baloo 2", cursive;
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+.album-copy { padding: 1rem 0.2rem 0; }
+.album-kicker {
+  margin: 0 0 0.25rem;
+  color: var(--soft);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.album-copy h2 {
+  margin: 0;
+  font-family: "Baloo 2", cursive;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+.album-copy > p:not(.album-kicker) {
+  margin: 0.4rem 0 0.8rem;
+  color: var(--soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.album-enter {
+  font-family: "Baloo 2", cursive;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--ink);
+}
+.album-card:hover .album-enter { background: var(--ink); color: var(--paper); }
+.album-back { margin-bottom: 1.6rem; }
+.album-head {
+  max-width: 42rem;
+  margin: 0 auto 2.8rem;
+  text-align: center;
+}
+.album-head .album-kicker { font-size: 0.82rem; }
+.album-head h1 {
+  margin: 0.2rem 0 0.7rem;
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  line-height: 1.05;
+}
+.album-dek { margin: 0; color: var(--soft); }
+.photo-roll {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.4rem;
+  margin-top: 2.8rem;
+}
+.photo-frame {
+  grid-column: span 6;
+  margin: 0;
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  animation: pop 0.4s ease both;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.photo-frame:nth-child(3n + 1) { grid-column: span 7; }
+.photo-frame:nth-child(3n + 2) { grid-column: span 5; }
+.photo-frame:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-hover);
+}
+.photo-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-bottom: 3px solid var(--ink);
+}
+.photo-frame figcaption { padding: 0.9rem 1rem 1rem; }
+.photo-frame h2 {
+  margin: 0;
+  font-family: "Baloo 2", cursive;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+.photo-meta {
+  margin: 0.15rem 0 0;
+  color: var(--soft);
+  font-size: 0.82rem;
+}
+.photo-empty {
+  grid-column: 2 / -2;
+  min-height: 300px;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  border: 3px dashed var(--ink);
+  border-radius: 20px;
+  background: var(--paper);
+  text-align: center;
+}
+.photo-empty-mark {
+  margin: 0 0 0.6rem;
+  font-family: "Baloo 2", cursive;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+}
+.photo-empty h2 {
+  margin: 0;
+  font-family: "Baloo 2", cursive;
+  font-size: 1.5rem;
+}
+.photo-empty p { margin: 0.3rem 0 0; color: var(--soft); }
 
 /* Annual goals — stats plus the principles behind them */
 .goals {
@@ -1052,5 +1219,10 @@ body {
   .hub { grid-template-columns: 1fr; }
   .pillars { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr; }
+  .album-index { grid-template-columns: 1fr; }
+  .photo-frame,
+  .photo-frame:nth-child(3n + 1),
+  .photo-frame:nth-child(3n + 2) { grid-column: 1 / -1; }
+  .photo-empty { grid-column: 1 / -1; min-height: 240px; }
   .holds-grid { grid-template-columns: repeat(2, 1fr); }
 }

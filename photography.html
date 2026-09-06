@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photography · FX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Nunito:ital,wght@0,600;0,700;0,800;1,600&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="photo-page">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav-home" href="index.html">FX</a>
+      <div class="nav-links">
+        <a href="papers.html">Papers</a>
+        <a href="cheetah.html">Cheetahs</a>
+        <a href="bouldering.html">Bouldering</a>
+        <a href="photography.html" class="active">Photography</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1 class="hero-title">Photography</h1>
+      <p class="photo-intro">Stories told in photographs — one place, one idea, one collection at a time.</p>
+    </header>
+
+    <main class="album-index" aria-label="Photography collections">
+      <a class="album-card" href="photo-albums/09-26-gymn.html">
+        <img class="album-cover" src="photos/web/09-26-gymn/01.jpg" loading="lazy" alt="09-26 Gymn collection cover" />
+        <div class="album-copy">
+          <p class="album-kicker">Photo story</p>
+          <h2>09-26 Gymn</h2>
+          <p>The payoff from bouldering — I love strong arms.</p>
+          <span class="album-enter">view story →</span>
+        </div>
+      </a>
+
+      <a class="album-card" href="photo-albums/first-roll.html">
+        <div class="album-cover album-cover-placeholder" role="img" aria-label="Cover photograph coming soon">
+          <span>02</span>
+        </div>
+        <div class="album-copy">
+          <p class="album-kicker">Photo story · 2026</p>
+          <h2>First Roll</h2>
+          <p>The beginning of the archive. A first collection is waiting for its photographs.</p>
+          <span class="album-enter">view story →</span>
+        </div>
+      </a>
+
+      <!--
+        To add another collection, copy this card and create its matching page
+        in photo-albums/. Replace the placeholder div with a cover image:
+
+        <a class="album-card" href="photo-albums/collection-name.html">
+          <img class="album-cover" src="photos/web/collection-name/cover.jpg" loading="lazy" alt="Describe the cover photograph" />
+          <div class="album-copy">
+            <p class="album-kicker">Photo story · Year</p>
+            <h2>Collection title</h2>
+            <p>A short introduction to this collection.</p>
+            <span class="album-enter">view story →</span>
+          </div>
+        </a>
+      -->
+    </main>
+
+    <footer class="site-footer">
+      <a href="https://github.com/feiyang3cat/feiyang3cat.github.io" target="_blank" rel="noopener">source on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>

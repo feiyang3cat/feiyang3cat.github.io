@@ -9,13 +9,29 @@ build step, no server.** Just open `index.html` (or push to GitHub Pages).
 
 | Page             | What it is                                   |
 | ---------------- | -------------------------------------------- |
-| `index.html`     | Home hub — links to the three sections       |
+| `index.html`     | Home hub — links to all sections             |
 | `papers.html`    | Tech Papers — papers I read, with notes      |
 | `cheetah.html`   | Cheetah Protection                           |
 | `bouldering.html`| Bouldering                                   |
+| `photography.html`| Photography portfolio                       |
 | `style.css`      | Shared cartoon-cat theme (light/dark)        |
 
 All pages share the same nav bar and `style.css`.
+
+## Adding photographs
+
+The photography section keeps publishable images separate from camera originals:
+
+- Put resized, web-ready JPG/WebP files in `photos/web/`.
+- Put RAW files and full-resolution originals in `photos/originals/`. This folder
+  is ignored by Git, so originals stay on this computer and are not published.
+- `photography.html` is the collection index. Copy its commented album-card
+  template for each new theme, with one cover image and a short introduction.
+- Create a matching page in `photo-albums/` and copy its commented
+  `<figure class="photo-frame">` template for each photograph in that theme.
+
+Keep another backup of `photos/originals/`: because Git ignores it, cloning the
+website repository on a new computer will not restore those files.
 
 ## Adding an entry to a section
 
